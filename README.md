@@ -67,7 +67,7 @@ Built as a learning project covering the full GenAI stack:
 
 ```bash
 # 1. Clone & enter
-git clone https://github.com/<your-username>/paperpilot.git
+git clone https://github.com/LakshithaNuwan722/paperpilot.git
 cd paperpilot
 
 # 2. Virtual environment
@@ -83,23 +83,6 @@ cp .env.example .env              # then edit .env and paste your key
 # 5. Run the web app
 streamlit run src/app.py
 ```
-
----
-
-## 📚 Learning the code (step by step)
-
-Each file teaches one concept. Run them in order to understand RAG:
-
-```bash
-cd src
-python step1_load_and_chunk.py     # PDF → chunks
-python step2_build_vectorstore.py  # chunks → embeddings → semantic search
-python step3_rag_chain.py          # full RAG: chat in the terminal
-```
-
-📖 Full explanations: [`LEARNING_GUIDE.md`](LEARNING_GUIDE.md) (English) ·
-[`LEARNING_GUIDE_SI.md`](LEARNING_GUIDE_SI.md) (සිංහල)
-
 ---
 
 ## 🗺️ Roadmap
