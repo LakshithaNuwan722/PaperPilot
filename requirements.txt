@@ -1,29 +1,29 @@
 # ===== Core RAG dependencies =====
-langchain==0.3.7
-langchain-community==0.3.5
-langchain-groq==0.2.1
+# Using >= (not ==) so pip can resolve compatible versions automatically.
+langchain>=0.3.20
+langchain-community>=0.3.20
+langchain-groq>=0.2.1
+langchain-core>=0.3.30
 
 # ===== Document loading & chunking =====
-pypdf==5.1.0
-langchain-text-splitters==0.3.2
+pypdf>=5.1.0
+langchain-text-splitters>=0.3.2
 
 # ===== Embeddings integration package =====
-langchain-huggingface==0.1.2
-
-# ===== Embeddings (local, free) =====
-sentence-transformers==3.3.1
+langchain-huggingface>=0.1.2
+sentence-transformers>=3.3.1
 
 # ===== Vector database (local, free) =====
-chromadb==0.5.20
-langchain-chroma==0.1.4
+chromadb>=0.5.20
+langchain-chroma>=0.1.4
 
 # ===== Web UI =====
-streamlit==1.40.1
+streamlit>=1.40.1
 
 # ===== Load API keys from .env =====
-python-dotenv==1.0.1
+python-dotenv>=1.0.1
 
 # ===== Tier 2: Agentic AI =====
-langgraph==0.2.53
+langgraph>=0.2.53
 # Optional web-search tool (free key from https://tavily.com)
-langchain-tavily==0.1.6
+langchain-tavily>=0.1.6
