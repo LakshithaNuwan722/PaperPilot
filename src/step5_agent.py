@@ -36,7 +36,8 @@ from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 from langchain_core.messages import HumanMessage
 
-# Import create_react_agent from langgraph
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 from langgraph.prebuilt import create_react_agent
 
 from step4_tools import ALL_TOOLS
