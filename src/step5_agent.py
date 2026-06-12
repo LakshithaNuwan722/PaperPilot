@@ -34,84 +34,105 @@ sys.path.append(str(Path(__file__).resolve().parent))
 
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
-from langchain_core.messages import SystemMessage, HumanMessage
+from langchain_core.messages import HumanMessage
 
-# create_react_agent moved in newer LangGraph. Try the new import first,
-# fall back to the older one so this works on multiple versions.
-try:
-    from langchain.agents import create_agent as create_react_agent
-except ImportError:
-    from langgraph.prebuilt import create_react_agent
+# Import create_react_agent from langgraph
+from langgraph.prebuilt import create_react_agent
 
 from step4_tools import ALL_TOOLS
 
 load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
 
-# The agent's "personality" + rules. This guides WHEN to use each tool.
-AGENT_INSTRUCTIONS = """You are PaperPilot, a helpful research assistant.
+# The agent's "personality" + rules.
+# NOTE: Do NOT include manual tool-call syntax (e.g. 'call: func(arg=...)').
+# Llama models interpret that as instructions to emit XML/text-style calls
+# instead of the proper JSON tool-call format that Groq's API expects.
+# LangGraph already tells the LLM about available tools via bind_tools().
+AGENT_INSTRUCTIONS = """You are PaperPilot, a research assistant.
 
-You have these tools:
-- search_documents: search the uploaded PDF. Use this FIRST for any question
-  that could be answered by the document.
-- calculator: for any arithmetic or math.
-- web_search: ONLY for current/world info not in the document.
+You have access to tools for:
+- Searching uploaded PDF documents for information
+- Evaluating math expressions
+- Searching the live internet
 
-Rules:
-- Prefer search_documents for document questions.
-- If the document does not contain the answer, say so. Only use web_search if
-  the user clearly wants outside/current information.
-- Always give a clear, concise final answer based on the tool results."""
+Use the appropriate tool when it would help answer the user's question.
+Do NOT narrate your actions. Do NOT say "I will now search for...".
+If no tool is needed, provide the final answer directly."""
 
 
-def build_agent():
+# Primary and fallback models. If the primary model consistently produces
+# malformed tool calls, the agent will retry with the fallback model.
+PRIMARY_MODEL = "llama-3.3-70b-versatile"
+FALLBACK_MODEL = "llama-3.1-8b-instant"
+
+
+def build_agent(model_name=None):
     """Create a ReAct agent: an LLM + tools + the reasoning loop."""
-    # NOTE on model choice:
-    # Agents need RELIABLE "tool calling". Some Llama models on Groq
-    # occasionally emit a malformed tool call (the '<function=...>' error),
-    # which crashes the request. Groq's openai/gpt-oss-20b and the
-    # llama-3.3-70b both support tool calling; if 70b misbehaves, switching
-    # models is the standard fix. We keep 70b but you can swap it here.
-    llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0)
+    model = model_name or PRIMARY_MODEL
+    # temperature=0 keeps tool calls precise and deterministic.
+    llm = ChatGroq(model=model, temperature=0)
+
     # create_react_agent wires the LLM to the tools and the think/act loop.
-    agent = create_react_agent(llm, ALL_TOOLS)
+    # We pass the system prompt via `prompt` so LangGraph manages it properly.
+    agent = create_react_agent(llm, ALL_TOOLS, prompt=AGENT_INSTRUCTIONS)
     return agent
 
 
-def ask_agent(agent, question, show_steps=True):
-    """Send a question to the agent and return its final answer."""
-    # We pass a system message (rules) + the user's question.
+def ask_agent(agent, question, show_steps=True, max_retries=2):
+    """Send a question to the agent and return its final answer.
+
+    Includes automatic retry logic for the known Llama+Groq malformed
+    tool call issue. On the first retry it reuses the same agent; on
+    subsequent retries it rebuilds the agent with a fallback model.
+    """
+    # The system message is now handled by the agent's `prompt` parameter,
+    # so we only pass the user's question here.
     inputs = {
         "messages": [
-            SystemMessage(content=AGENT_INSTRUCTIONS),
             HumanMessage(content=question),
         ]
     }
 
-    final_answer = ""
-    try:
-        # .stream lets us watch each step (tool calls + results) as it happens.
-        for step in agent.stream(inputs, stream_mode="values"):
-            msg = step["messages"][-1]
-            if show_steps:
-                # Show tool calls the agent decided to make.
-                tool_calls = getattr(msg, "tool_calls", None)
-                if tool_calls:
-                    for tc in tool_calls:
-                        print(f"   🔧 calling tool: {tc['name']}({tc['args']})")
-            final_answer = msg.content
-    except Exception as e:
-        # Llama sometimes emits a malformed tool call ('tool_use_failed').
-        # Instead of crashing, tell the user and let them retry.
-        if "tool_use_failed" in str(e):
-            return ("⚠️ The model produced a malformed tool call (a known "
-                    "Llama+Groq hiccup). Please ask again, or rephrase the "
-                    "question slightly.")
-        return f"⚠️ Agent error: {e}"
+    current_agent = agent
+    for attempt in range(max_retries + 1):
+        final_answer = ""
+        try:
+            # .stream lets us watch each step (tool calls + results) as it happens.
+            for step in current_agent.stream(inputs, stream_mode="values"):
+                msg = step["messages"][-1]
+                if show_steps:
+                    # Show tool calls the agent decided to make.
+                    tool_calls = getattr(msg, "tool_calls", None)
+                    if tool_calls:
+                        for tc in tool_calls:
+                            print(f"    🔧 calling tool: {tc['name']}({tc['args']})")
+                final_answer = msg.content
+            return final_answer
+        except Exception as e:
+            # Llama sometimes emits a malformed tool call ('tool_use_failed').
+            if "tool_use_failed" in str(e) and attempt < max_retries:
+                if attempt == 0:
+                    # First retry: same model, maybe it was transient.
+                    print(f"    ⚠️ Malformed tool call — retrying ({attempt + 1}/{max_retries})...")
+                else:
+                    # Later retries: switch to the fallback model.
+                    print(f"    ⚠️ Retrying with fallback model ({FALLBACK_MODEL})...")
+                    current_agent = build_agent(model_name=FALLBACK_MODEL)
+                continue
+            elif "tool_use_failed" in str(e):
+                return ("⚠️ The model produced a malformed tool call (a known "
+                        "Llama+Groq hiccup). Retried {} time(s) but it persisted. "
+                        "Please rephrase the question slightly.".format(max_retries))
+            return f"⚠️ Agent error: {e}"
     return final_answer
 
 
 if __name__ == "__main__":
+    # Fix unicode encoding issues on Windows terminals
+    if sys.platform == "win32":
+        sys.stdout.reconfigure(encoding="utf-8")
+
     if not os.getenv("GROQ_API_KEY"):
         print("❌ GROQ_API_KEY not found. Create a .env file (see .env.example).")
         raise SystemExit
@@ -121,7 +142,10 @@ if __name__ == "__main__":
     print("   Try: 'What is Machine Learning?'  or  'What is 25 * 4?'\n")
 
     while True:
-        q = input("You: ").strip()
+        try:
+            q = input("You: ").strip()
+        except EOFError:
+            break
         if q.lower() in {"quit", "exit"}:
             break
         print("   (agent is thinking...)")
