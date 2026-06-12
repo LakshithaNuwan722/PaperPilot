@@ -42,20 +42,27 @@ load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 # TOOL 1: Search the PDF (this is our Tier 1 RAG, now wrapped as a tool)
 # ----------------------------------------------------------------------
 # We load the retriever once at import time so every call reuses it.
-_retriever = load_vectorstore().as_retriever(search_kwargs={"k": 3})
-
+# Note: This requires a vector store to exist.
+try:
+    _retriever = load_vectorstore().as_retriever(search_kwargs={"k": 3})
+except Exception:
+    _retriever = None
 
 @tool
 def search_documents(query: str) -> str:
     """Search the uploaded PDF document for information about a topic.
     Use this for any question about the document's content (e.g. definitions,
     concepts, facts that would be inside the PDF). Input: a search query."""
+    if _retriever is None:
+        return "Error: Vector store not found. Please run step 2 first."
     docs = _retriever.invoke(query)
     if not docs:
         return "No relevant information found in the document."
     # Return the retrieved chunks as text for the LLM to read.
-    return "\n\n".join(doc.page_content for doc in docs)
+    return "\n\n".join([doc.page_content for doc in docs])
 
+
+import math
 
 # ----------------------------------------------------------------------
 # TOOL 2: Calculator (LLMs are bad at exact math; give them a real one)
@@ -63,15 +70,20 @@ def search_documents(query: str) -> str:
 @tool
 def calculator(expression: str) -> str:
     """Evaluate a math expression and return the result.
-    Use this for any arithmetic or calculation (e.g. '25 * 4', '(100-20)/4').
+    Use this for any arithmetic or calculation (e.g. '25 * 4', 'sqrt(256)', '2**8').
     Input: a math expression as a string."""
-    # SAFETY: only allow characters that belong in a math expression.
-    allowed = set("0123456789+-*/(). %")
-    if not set(expression).issubset(allowed):
-        return "Error: only numbers and + - * / ( ) % are allowed."
+    # Allow numbers, basic operators, brackets, and math functions
+    allowed_chars = set("0123456789+-*/(). %*")
+    # Clean the expression for common LLM mistakes (like ^ for power)
+    expression = expression.replace("^", "**")
+    
+    if not set(expression).issubset(allowed_chars) and "sqrt" not in expression:
+        return "Error: only numbers, + - * / ( ) % ** and sqrt are allowed."
+    
     try:
-        # eval with no builtins = a small, safe sandbox for plain math.
-        result = eval(expression, {"__builtins__": {}}, {})
+        # Provide math functions to eval safely
+        safe_dict = {"sqrt": math.sqrt, "pow": math.pow, "__builtins__": {}}
+        result = eval(expression, safe_dict, {})
         return str(result)
     except Exception as e:
         return f"Error: could not evaluate '{expression}' ({e})"
@@ -88,8 +100,8 @@ def web_search(query: str) -> str:
     if not os.getenv("TAVILY_API_KEY"):
         return "Web search is unavailable (no TAVILY_API_KEY set)."
     try:
-        from langchain_tavily import TavilySearch
-        search = TavilySearch(max_results=3)
+        from langchain_tavily import TavilySearchResults
+        search = TavilySearchResults(max_results=3)
         return str(search.invoke(query))
     except Exception as e:
         return f"Web search error: {e}"
@@ -105,7 +117,7 @@ if __name__ == "__main__":
     print(search_documents.invoke("What is Machine Learning?")[:300], "...\n")
 
     print("=== TOOL 2: calculator ===")
-    print("25 * 4 =", calculator.invoke("25 * 4"))
+    print("25 * 4 =", calculator.invoke("25*4"))
     print("(100-20)/4 =", calculator.invoke("(100-20)/4"), "\n")
 
     print("=== TOOL 3: web_search ===")
