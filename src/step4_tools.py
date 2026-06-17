@@ -17,9 +17,8 @@ We define 3 tools:
     1. search_documents  -> our RAG retriever (search the PDF)
     2. calculator        -> safe math evaluation
     3. web_search        -> live internet search (optional, needs Tavily key)
+    4. summarize_document -> get the gist of the document
 
-Run this file directly to test the tools:
-    python src/step4_tools.py
 ========================================================================
 """
 
@@ -107,8 +106,31 @@ def web_search(query: str) -> str:
         return f"Web search error: {e}"
 
 
+# ----------------------------------------------------------------------
+# TOOL 4: Summarizer (Get the gist of the document)
+# ----------------------------------------------------------------------
+@tool
+def summarize_document(topic: str = "the entire document") -> str:
+    """Provides a concise summary of the document or a specific topic within it.
+    Use this when the user asks for a 'summary', 'overview', or 'key points'.
+    Input: the specific topic to summarize (default is the whole document)."""
+    if _retriever is None:
+        return "Error: Vector store not found. Please run step 2 first."
+    
+    # We retrieve more chunks (k=10) to get a broader overview for the summary.
+    docs = _retriever.invoke(f"Give me a comprehensive overview of {topic}")
+    if not docs:
+        return "No relevant information found to summarize."
+    
+    context = "\n\n".join([doc.page_content for doc in docs])
+    
+    # We use a simple prompt for the LLM to summarize the retrieved chunks.
+    # Note: In a real agent, the LLM calls this tool and then summarizes the output itself.
+    # Here we return the most relevant text for the agent to process.
+    return f"Here are the key excerpts from the document related to '{topic}':\n\n{context}"
+
 # A list we can import elsewhere to give the agent all its tools.
-ALL_TOOLS = [search_documents, calculator, web_search]
+ALL_TOOLS = [search_documents, calculator, web_search, summarize_document]
 
 
 if __name__ == "__main__":
@@ -122,3 +144,4 @@ if __name__ == "__main__":
 
     print("=== TOOL 3: web_search ===")
     print(web_search.invoke("latest AI news")[:200], "...")
+
