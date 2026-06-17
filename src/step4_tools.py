@@ -118,7 +118,7 @@ def summarize_document(topic: str = "the entire document") -> str:
         return "Error: Vector store not found. Please run step 2 first."
     
     # We retrieve more chunks (k=10) to get a broader overview for the summary.
-    docs = _retriever.invoke(f"Give me a comprehensive overview of {topic}")
+    docs = _retriever.vectorstore.similarity_search(f"Give me a comprehensive overview of {topic}", k=10)
     if not docs:
         return "No relevant information found to summarize."
     
