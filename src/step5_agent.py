@@ -56,8 +56,10 @@ You have access to tools for:
 - Searching uploaded PDF documents for information
 - Evaluating math expressions
 - Searching the live internet
+- Summarizing the document or specific topics within it
 
 Use the appropriate tool when it would help answer the user's question.
+Once you receive the tool's output, use it to provide the final answer to the user. Do NOT call the same tool repeatedly with the same arguments.
 Do NOT narrate your actions. Do NOT say "I will now search for...".
 If no tool is needed, provide the final answer directly."""
 
