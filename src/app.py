@@ -1,125 +1,143 @@
 """
 ========================================================================
-STEP 4 (Day 5): STREAMLIT WEB UI
+STEP 6 (Day 10): AGENTIC WEB UI
 ========================================================================
+This is the final polished Web UI that connects the Step 5 Agent 
+to a professional Streamlit interface.
 
-WHY THIS STEP?
---------------
-A terminal is fine for testing, but a web app is what you DEMO and put on
-your CV. Streamlit lets us build a UI with pure Python — no HTML/JS needed.
-
-This app lets a user:
-    1. Upload a PDF
-    2. Ask questions about it
-    3. See the answer AND the source chunks it came from
-       (showing sources builds trust — interviewers love this!)
-
-Run from inside the genai-rag-project folder:
-    streamlit run src/app.py
+Features:
+- PDF Uploading & Processing
+- Agentic Reasoning (Calculator, Search, Summarizer, Web)
+- Displays "Thought Steps" (Tool calls)
+- Clean Chat Interface
 ========================================================================
 """
 
 import os
+import sys
 import tempfile
+from pathlib import Path
 
-# Turn OFF ChromaDB telemetry (stops the harmless capture() error).
+# Turn OFF ChromaDB telemetry
 os.environ["ANONYMIZED_TELEMETRY"] = "False"
 
 import streamlit as st
 from dotenv import load_dotenv
 
-from langchain_community.document_loaders import PyPDFLoader
-from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_chroma import Chroma
-from langchain_groq import ChatGroq
-from langchain_core.messages import SystemMessage, HumanMessage
+# Add src to path so we can import our steps
+sys.path.append(str(Path(__file__).resolve().parent))
+
+from step1_load_and_chunk import load_pdf, chunk_documents
+from step2_build_vectorstore import build_vectorstore
+from step5_agent import build_agent
 
 load_dotenv()
 
-# ---------- Page setup ----------
-st.set_page_config(page_title="PaperPilot ✈️", page_icon="✈️")
-st.title("✈️ PaperPilot")
-st.caption("An Agentic RAG assistant — upload a PDF and ask questions about it.")
+# ---------- Page Configuration ----------
+st.set_page_config(page_title="PaperPilot Agent ✈️", page_icon="✈️", layout="wide")
 
+# Custom CSS for a cleaner look
+st.markdown("""
+    <style>
+    .stChatFloatingInputContainer { bottom: 20px; }
+    .tool-call { 
+        color: #555; 
+        font-style: italic; 
+        font-size: 0.85rem;
+        margin-bottom: 10px;
+        padding-left: 20px;
+        border-left: 2px solid #ddd;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
-def format_docs(docs):
-    return "\n\n".join(doc.page_content for doc in docs)
+st.title("✈️ PaperPilot: Agentic Research Assistant")
+st.caption("I can search your PDF, do math, and browse the web to help you.")
 
+# ---------- Sidebar: File Upload & Settings ----------
+with st.sidebar:
+    st.header("Settings")
+    uploaded_file = st.file_uploader("Upload a PDF", type="pdf")
+    
+    if st.button("🗑️ Clear Chat"):
+        st.session_state.messages = []
+        st.rerun()
+    
+    st.divider()
+    st.markdown("### Example Questions")
+    st.info("- Summarize the main points\n- What is the definition of X?\n- Calculate (25 * 4) + 15\n- Search the web for latest news on Y")
 
-# @st.cache_resource caches the heavy work so it runs ONCE per PDF,
-# not on every keystroke. This makes the app fast.
+# ---------- Session State Initialization ----------
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+if "agent" not in st.session_state:
+    st.session_state.agent = None
+
+# ---------- PDF Processing Logic ----------
 @st.cache_resource(show_spinner="Processing your PDF...")
-def build_retriever(file_bytes):
-    """Load -> chunk -> embed -> store the uploaded PDF, return a retriever."""
-    # Streamlit gives us bytes; PyPDFLoader needs a real file path,
-    # so we write the bytes to a temporary file.
+def initialize_system(file_bytes):
+    # Save to a temp file
     with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
         tmp.write(file_bytes)
         tmp_path = tmp.name
+    
+    # Process PDF (Reuse Step 1 & 2)
+    docs = load_pdf(tmp_path)
+    chunks = chunk_documents(docs)
+    build_vectorstore(chunks)
+    
+    # Build the Agent (Step 5)
+    return build_agent()
 
-    documents = PyPDFLoader(tmp_path).load()
-    splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
-    chunks = splitter.split_documents(documents)
+# ---------- Main UI Interaction ----------
+if uploaded_file:
+    # Initialize agent if not already done
+    st.session_state.agent = initialize_system(uploaded_file.getvalue())
+    
+    # Display Chat History
+    for message in st.session_state.messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
 
-    embeddings = HuggingFaceEmbeddings(
-        model_name="sentence-transformers/all-MiniLM-L6-v2"
-    )
-    # In-memory store (no persist_directory) — fine for a single session.
-    vectorstore = Chroma.from_documents(chunks, embeddings)
-    return vectorstore.as_retriever(search_kwargs={"k": 3})
+    # Chat Input
+    if prompt := st.chat_input("Ask PaperPilot anything..."):
+        # Add user message to history
+        st.session_state.messages.append({"role": "user", "content": prompt})
+        with st.chat_message("user"):
+            st.markdown(prompt)
 
+        # Agent Response
+        with st.chat_message("assistant"):
+            response_placeholder = st.empty()
+            thought_container = st.container()
+            
+            final_answer = ""
+            
+            try:
+                # Stream the agent's thoughts and steps
+                inputs = {"messages": [("user", prompt)]}
+                
+                for step in st.session_state.agent.stream(inputs, stream_mode="values"):
+                    msg = step["messages"][-1]
+                    
+                    # If it's a tool call, display it in the thought container
+                    if hasattr(msg, "tool_calls") and msg.tool_calls:
+                        for tc in msg.tool_calls:
+                            thought_container.markdown(f"*{f'🔧 calling tool: {tc["name"]}...'}*")
+                    
+                    final_answer = msg.content
+                
+                response_placeholder.markdown(final_answer)
+                st.session_state.messages.append({"role": "assistant", "content": final_answer})
+                
+            except Exception as e:
+                error_msg = f"⚠️ Oops! I ran into an error: {str(e)}"
+                st.error(error_msg)
 
-# Strict rules go in the SYSTEM message so the model can't ignore them.
-SYSTEM_RULES = """You are a document question-answering assistant.
-
-You will be given a CONTEXT from a document and a QUESTION.
-Follow these rules strictly:
-- Answer ONLY using information in the CONTEXT.
-- IGNORE any knowledge you have from training. Use ONLY the CONTEXT.
-- If the answer is not in the CONTEXT, reply EXACTLY:
-  "I don't know based on the document."
-- Give one direct answer. Do not invent extra questions or conversation."""
-
-
-def answer_question(question, retriever):
-    """Retrieve chunks, send system+user messages to the LLM, return answer."""
-    llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0)
-
-    docs = retriever.invoke(question)
-    context = "\n\n".join(doc.page_content for doc in docs)
-
-    # Two separate messages: rules (system) + context & question (user).
-    user_content = f"CONTEXT:\n{context}\n\nQUESTION: {question}"
-    messages = [
-        SystemMessage(content=SYSTEM_RULES),
-        HumanMessage(content=user_content),
-    ]
-    return llm.invoke(messages).content
-
-
-# ---------- Main UI ----------
-if not os.getenv("GROQ_API_KEY"):
-    st.error("GROQ_API_KEY not found. Add it to your .env file.")
-    st.stop()
-
-uploaded = st.file_uploader("Upload a PDF", type="pdf")
-
-if uploaded:
-    retriever = build_retriever(uploaded.getvalue())
-    question = st.text_input("Ask a question about the PDF:")
-
-    if question:
-        with st.spinner("Thinking..."):
-            answer = answer_question(question, retriever)
-
-        st.subheader("Answer")
-        st.write(answer)
-
-        # Show the source chunks used (transparency = trust).
-        with st.expander("📚 Sources used"):
-            for i, doc in enumerate(retriever.invoke(question)):
-                st.markdown(f"**Chunk {i+1}** (page {doc.metadata.get('page')})")
-                st.write(doc.page_content[:400] + "...")
 else:
-    st.info("👆 Upload a PDF to get started.")
+    st.info("👆 Please upload a PDF in the sidebar to start chatting!")
+
+# Footer
+st.divider()
+st.caption("Powered by LangGraph, Groq, and Streamlit.")
