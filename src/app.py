@@ -87,6 +87,11 @@ def initialize_system(file_bytes):
     chunks = chunk_documents(docs)
     build_vectorstore(chunks)
     
+    # Reload the retriever in step4_tools so the tools use the newly built DB!
+    import step4_tools
+    from step2_build_vectorstore import load_vectorstore
+    step4_tools._retriever = load_vectorstore().as_retriever(search_kwargs={"k": 3})
+    
     # Build the Agent (Step 5)
     return build_agent()
 
@@ -124,7 +129,7 @@ if uploaded_file:
                     # If it's a tool call, display it in the thought container
                     if hasattr(msg, "tool_calls") and msg.tool_calls:
                         for tc in msg.tool_calls:
-                            thought_container.markdown(f"*{f'🔧 calling tool: {tc["name"]}...'}*")
+                            thought_container.markdown(f"*🔧 calling tool: {tc['name']}...*")
                     
                     final_answer = msg.content
                 
