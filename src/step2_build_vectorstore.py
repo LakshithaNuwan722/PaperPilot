@@ -63,10 +63,18 @@ def build_vectorstore(chunks):
     the new chunks to the OLD ones, so an old PDF's content stays mixed in
     with your new PDF. Deleting guarantees a clean, fresh index each build.
     """
+    # Clear Chroma's internal system cache so it doesn't get confused
+    # when we delete its underlying files! This prevents the "default_tenant" error.
+    import chromadb
+    chromadb.api.client.SharedSystemClient.clear_system_cache()
+
     # Wipe the old database so we start fresh (no leftover chunks).
     if os.path.exists(CHROMA_DIR):
-        shutil.rmtree(CHROMA_DIR)
-        print(f"🧹 Removed old vector store at '{CHROMA_DIR}'")
+        try:
+            shutil.rmtree(CHROMA_DIR)
+            print(f"🧹 Removed old vector store at '{CHROMA_DIR}'")
+        except Exception as e:
+            print(f"⚠️ Could not remove old vector store: {e}")
 
     embeddings = get_embedding_model()
     vectorstore = Chroma.from_documents(
