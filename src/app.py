@@ -17,6 +17,7 @@ import streamlit as st
 from langchain_core.messages import AIMessage
 
 # --- Path setup ---
+# Since app.py is in src/, the root is the parent folder
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.append(str(PROJECT_ROOT))
@@ -313,7 +314,6 @@ p, span, div, li, label { color: var(--text-primary); }
 </style>
 """, unsafe_allow_html=True)
 
-
 # ─────────────────────────────────────────
 # AGENT INIT
 # ─────────────────────────────────────────
@@ -326,7 +326,6 @@ def init_system(file_bytes):
     chunks = chunk_documents(docs)
     build_vectorstore(chunks)
     return build_agent()
-
 
 # ─────────────────────────────────────────
 # SIDEBAR
@@ -375,7 +374,7 @@ with st.sidebar:
     st.markdown("**🤖 Powered By**")
     st.markdown("""
     <div style="font-size:0.82rem;color:#64748b;line-height:1.9;">
-        🤖 &nbsp;Groq · GPT-OSS 120B<br>
+        🤖 &nbsp;Groq · Llama 3.3 70B<br>
         🔗 &nbsp;LangGraph ReAct Agent<br>
         🗃️ &nbsp;ChromaDB Vector Store<br>
         🚀 &nbsp;HuggingFace Spaces
@@ -387,7 +386,6 @@ with st.sidebar:
         '<p style="font-size:0.72rem;color:#334155;text-align:center;">© 2026 PaperPilot AI</p>',
         unsafe_allow_html=True,
     )
-
 
 # ─────────────────────────────────────────
 # MAIN CONTENT — LANDING
@@ -444,7 +442,6 @@ if not uploaded:
         '<p style="text-align:center;color:#475569;font-size:0.85rem;">⬅️ Upload a PDF from the sidebar to begin your research session</p>',
         unsafe_allow_html=True,
     )
-
 
 # ─────────────────────────────────────────
 # MAIN CONTENT — CHAT
