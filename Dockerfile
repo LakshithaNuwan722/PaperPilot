@@ -1,34 +1,31 @@
 # 1. Use an official Python base image
 FROM python:3.10-slim
 
-# 2. Set the working directory inside the container
+# 2. Set the working directory
 WORKDIR /app
 
-# 3. Install system dependencies (needed for some Python packages)
+# 3. Install system dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# 4. Copy the requirements file into the container
+# 4. Copy and install requirements
 COPY requirements.txt .
-
-# 5. Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 6. Copy the rest of the application code
+# 5. Copy the rest of the application
 COPY . .
 
-# 7. Create necessary directories
-RUN mkdir -p data logs chroma_db
+# 6. Create necessary directories with correct permissions
+RUN mkdir -p data logs chroma_db && chmod -R 777 data logs chroma_db
 
-# 8. Expose the port that Streamlit runs on
-EXPOSE 8501
+# 7. Expose the port HuggingFace expects (7860)
+EXPOSE 7860
 
-# 9. Set environment variables
+# 8. Set environment variables
 ENV PYTHONUNBUFFERED=1
 ENV ANONYMIZED_TELEMETRY=False
-ENV PYTHONPATH=/app
 
-# 10. Command to run the application
-CMD ["streamlit", "run", "src/app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+# 9. Run streamlit on port 7860
+CMD ["streamlit", "run", "src/app.py", "--server.port=7860", "--server.address=0.0.0.0"]
