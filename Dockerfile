@@ -8,7 +8,6 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     build-essential \
     curl \
-    software-properties-common \
     && rm -rf /var/lib/apt/lists/*
 
 # 4. Copy the requirements file into the container
@@ -29,6 +28,7 @@ EXPOSE 8501
 # 9. Set environment variables
 ENV PYTHONUNBUFFERED=1
 ENV ANONYMIZED_TELEMETRY=False
+ENV PYTHONPATH=/app
 
 # 10. Command to run the application
 CMD ["streamlit", "run", "src/app.py", "--server.port=8501", "--server.address=0.0.0.0"]
