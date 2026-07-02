@@ -1,0 +1,66 @@
+2026-07-01 21:04:33,017 - Step1_Ingestion - INFO - Loading PDF from C:\Users\LAKSHI~1\AppData\Local\Temp\tmp9ez3b9dp.pdf
+2026-07-01 21:04:33,918 - Step1_Ingestion - INFO - Loaded 11 pages
+2026-07-01 21:04:33,922 - Step1_Ingestion - INFO - Split into 34 chunks
+2026-07-01 21:08:14,285 - Streamlit_UI - ERROR - UI Error: Error code: 413 - {'error': {'message': 'Request too large for model `llama-3.3-70b-versatile` in organization `org_01kq2ewhhaeja8b4zka00nz8v9` service tier `on_demand` on tokens per minute (TPM): Limit 12000, Requested 12685, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+2026-07-01 21:12:29,270 - Step1_Ingestion - INFO - Loading PDF from C:\Users\LAKSHI~1\AppData\Local\Temp\tmpsrgs09gh.pdf
+2026-07-01 21:12:29,668 - Step1_Ingestion - INFO - Loaded 7 pages
+2026-07-01 21:12:29,669 - Step1_Ingestion - INFO - Split into 14 chunks
+2026-07-01 22:28:36,227 - Step1_Ingestion - INFO - Loading PDF from C:\Users\LAKSHI~1\AppData\Local\Temp\tmpimj09mon.pdf
+2026-07-01 22:28:36,447 - Step1_Ingestion - INFO - Loaded 7 pages
+2026-07-01 22:28:36,449 - Step1_Ingestion - INFO - Split into 14 chunks
+2026-07-01 22:34:02,653 - Step1_Ingestion - INFO - Loading PDF from C:\Users\LAKSHI~1\AppData\Local\Temp\tmpc0uk8a0l.pdf
+2026-07-01 22:34:02,945 - Step1_Ingestion - INFO - Loaded 7 pages
+2026-07-01 22:34:02,949 - Step1_Ingestion - INFO - Split into 14 chunks
+2026-07-01 22:39:11,994 - Step1_Ingestion - INFO - Loading PDF from C:\Users\LAKSHI~1\AppData\Local\Temp\tmpcqo7gyyr.pdf
+2026-07-01 22:39:12,399 - Step1_Ingestion - INFO - Loaded 7 pages
+2026-07-01 22:39:12,399 - Step1_Ingestion - INFO - Split into 14 chunks
+2026-07-02 00:04:45,887 - Step1_Ingestion - INFO - Loading PDF from C:\Users\LAKSHI~1\AppData\Local\Temp\tmp_x__0f9x.pdf
+2026-07-02 00:04:46,128 - Step1_Ingestion - INFO - Loaded 7 pages
+2026-07-02 00:04:46,128 - Step1_Ingestion - INFO - Split into 14 chunks
+2026-07-02 00:09:05,817 - Streamlit_UI - ERROR - UI Error: Error code: 400 - {'error': {'message': "Failed to call a function. Please adjust your prompt. See 'failed_generation' for more details.", 'type': 'invalid_request_error', 'code': 'tool_use_failed', 'failed_generation': '<function=web_search {"query": "Azure AI Foundry"} </function>'}}
+2026-07-02 00:09:31,570 - Streamlit_UI - ERROR - UI Error: Error code: 400 - {'error': {'message': "Failed to call a function. Please adjust your prompt. See 'failed_generation' for more details.", 'type': 'invalid_request_error', 'code': 'tool_use_failed', 'failed_generation': '<function=web_search{"query": "Azure AI Foundry"}</function>'}}
+2026-07-02 00:09:53,032 - Streamlit_UI - ERROR - UI Error: Error code: 400 - {'error': {'message': "Failed to call a function. Please adjust your prompt. See 'failed_generation' for more details.", 'type': 'invalid_request_error', 'code': 'tool_use_failed', 'failed_generation': '<function=web_search{"query": "Azure AI Foundry"}</function>'}}
+2026-07-02 00:10:45,630 - Streamlit_UI - ERROR - UI Error: Error code: 400 - {'error': {'message': 'tool call validation failed: attempted to call tool \'web_search{"query": "scikit-learn library"}\' which was not in request.tools', 'type': 'invalid_request_error', 'code': 'tool_use_failed', 'failed_generation': '<function=web_search{"query": "scikit-learn library"}></function>'}}
+2026-07-02 00:11:05,793 - Step4_Tools - ERROR - Web search failed: cannot import name 'TavilySearchResults' from 'langchain_tavily' (D:\genai-rag-project\venv\Lib\site-packages\langchain_tavily\__init__.py)
+2026-07-02 00:11:06,162 - Step4_Tools - ERROR - Web search failed: cannot import name 'TavilySearchResults' from 'langchain_tavily' (D:\genai-rag-project\venv\Lib\site-packages\langchain_tavily\__init__.py)
+2026-07-02 00:11:25,176 - Streamlit_UI - ERROR - UI Error: Error code: 400 - {'error': {'message': 'tool call validation failed: attempted to call tool \'web_search{"query": "scikit-learn library"}\' which was not in request.tools', 'type': 'invalid_request_error', 'code': 'tool_use_failed', 'failed_generation': '<function=web_search{"query": "scikit-learn library"}></function>'}}
+2026-07-02 00:14:00,036 - Step1_Ingestion - INFO - Loading PDF from C:\Users\LAKSHI~1\AppData\Local\Temp\tmpusfe2gxs.pdf
+2026-07-02 00:14:00,145 - Step1_Ingestion - INFO - Loaded 7 pages
+2026-07-02 00:14:00,145 - Step1_Ingestion - INFO - Split into 14 chunks
+2026-07-02 00:14:27,673 - Streamlit_UI - ERROR - UI Error: Error code: 400 - {'error': {'message': 'The model `llama3-groq-70b-8192-tool-use-preview` has been decommissioned and is no longer supported. Please refer to https://console.groq.com/docs/deprecations for a recommendation on which model to use instead.', 'type': 'invalid_request_error', 'code': 'model_decommissioned'}}
+2026-07-02 00:17:23,264 - Step1_Ingestion - INFO - Loading PDF from C:\Users\LAKSHI~1\AppData\Local\Temp\tmp7xs9nkj_.pdf
+2026-07-02 00:17:23,523 - Step1_Ingestion - INFO - Loaded 7 pages
+2026-07-02 00:17:23,526 - Step1_Ingestion - INFO - Split into 14 chunks
+2026-07-02 00:30:46,835 - Step1_Ingestion - INFO - Loading PDF from C:\Users\LAKSHI~1\AppData\Local\Temp\tmpgl9n_z32.pdf
+2026-07-02 00:30:47,823 - Step1_Ingestion - INFO - Loaded 25 pages
+2026-07-02 00:30:47,824 - Step1_Ingestion - INFO - Split into 44 chunks
+2026-07-02 00:37:12,421 - Step1_Ingestion - INFO - Loading PDF from C:\Users\LAKSHI~1\AppData\Local\Temp\tmpd2zuft2o.pdf
+2026-07-02 00:37:15,025 - Step1_Ingestion - INFO - Loaded 25 pages
+2026-07-02 00:37:15,027 - Step1_Ingestion - INFO - Split into 44 chunks
+2026-07-02 00:42:43,305 - Step4_Tools - ERROR - Web search failed: cannot import name 'TavilySearchResults' from 'langchain_tavily' (D:\genai-rag-project\venv\Lib\site-packages\langchain_tavily\__init__.py)
+2026-07-02 00:42:44,351 - Step4_Tools - ERROR - Web search failed: cannot import name 'TavilySearchResults' from 'langchain_tavily' (D:\genai-rag-project\venv\Lib\site-packages\langchain_tavily\__init__.py)
+2026-07-02 00:43:51,400 - Step4_Tools - ERROR - Web search failed: cannot import name 'TavilySearchResults' from 'langchain_tavily' (D:\genai-rag-project\venv\Lib\site-packages\langchain_tavily\__init__.py)
+2026-07-02 00:57:19,622 - Step4_Tools - ERROR - Web search failed: cannot import name 'TavilySearchResults' from 'langchain_tavily' (D:\genai-rag-project\venv\Lib\site-packages\langchain_tavily\__init__.py)
+2026-07-02 00:57:20,849 - Step4_Tools - ERROR - Web search failed: cannot import name 'TavilySearchResults' from 'langchain_tavily' (D:\genai-rag-project\venv\Lib\site-packages\langchain_tavily\__init__.py)
+2026-07-02 00:57:21,923 - Step4_Tools - ERROR - Web search failed: cannot import name 'TavilySearchResults' from 'langchain_tavily' (D:\genai-rag-project\venv\Lib\site-packages\langchain_tavily\__init__.py)
+2026-07-02 00:58:10,618 - Step4_Tools - ERROR - Web search failed: cannot import name 'TavilySearchResults' from 'langchain_tavily' (D:\genai-rag-project\venv\Lib\site-packages\langchain_tavily\__init__.py)
+2026-07-02 00:58:11,403 - Step4_Tools - ERROR - Web search failed: cannot import name 'TavilySearchResults' from 'langchain_tavily' (D:\genai-rag-project\venv\Lib\site-packages\langchain_tavily\__init__.py)
+2026-07-02 00:59:01,669 - Step4_Tools - ERROR - Web search failed: cannot import name 'TavilySearchResults' from 'langchain_tavily' (D:\genai-rag-project\venv\Lib\site-packages\langchain_tavily\__init__.py)
+2026-07-02 00:59:02,520 - Step4_Tools - ERROR - Web search failed: cannot import name 'TavilySearchResults' from 'langchain_tavily' (D:\genai-rag-project\venv\Lib\site-packages\langchain_tavily\__init__.py)
+2026-07-02 00:59:04,057 - Step4_Tools - ERROR - Web search failed: cannot import name 'TavilySearchResults' from 'langchain_tavily' (D:\genai-rag-project\venv\Lib\site-packages\langchain_tavily\__init__.py)
+2026-07-02 00:59:47,716 - Step4_Tools - ERROR - Web search failed: cannot import name 'TavilySearchResults' from 'langchain_tavily' (D:\genai-rag-project\venv\Lib\site-packages\langchain_tavily\__init__.py)
+2026-07-02 00:59:48,440 - Step4_Tools - ERROR - Web search failed: cannot import name 'TavilySearchResults' from 'langchain_tavily' (D:\genai-rag-project\venv\Lib\site-packages\langchain_tavily\__init__.py)
+2026-07-02 01:04:37,969 - Step4_Tools - ERROR - Web search failed: cannot import name 'TavilySearchResults' from 'langchain_tavily' (D:\genai-rag-project\venv\Lib\site-packages\langchain_tavily\__init__.py)
+2026-07-02 01:04:38,818 - Step4_Tools - ERROR - Web search failed: cannot import name 'TavilySearchResults' from 'langchain_tavily' (D:\genai-rag-project\venv\Lib\site-packages\langchain_tavily\__init__.py)
+2026-07-02 01:04:40,114 - Step4_Tools - ERROR - Web search failed: cannot import name 'TavilySearchResults' from 'langchain_tavily' (D:\genai-rag-project\venv\Lib\site-packages\langchain_tavily\__init__.py)
+2026-07-02 23:25:14,962 - Step1_Ingestion - INFO - Loading PDF from C:\Users\LAKSHI~1\AppData\Local\Temp\tmpb1tl84ix.pdf
+2026-07-02 23:25:15,172 - Step1_Ingestion - INFO - Loaded 1 pages
+2026-07-02 23:25:15,172 - Step1_Ingestion - INFO - Split into 1 chunks
+2026-07-02 23:30:55,579 - Step4_Tools - ERROR - Web search failed: cannot import name 'TavilySearchResults' from 'langchain_tavily' (D:\genai-rag-project\venv\Lib\site-packages\langchain_tavily\__init__.py)
+2026-07-02 23:32:07,471 - Step4_Tools - ERROR - Web search failed: cannot import name 'TavilySearchResults' from 'langchain_tavily' (D:\genai-rag-project\venv\Lib\site-packages\langchain_tavily\__init__.py)
+2026-07-02 23:32:08,320 - Step4_Tools - ERROR - Web search failed: cannot import name 'TavilySearchResults' from 'langchain_tavily' (D:\genai-rag-project\venv\Lib\site-packages\langchain_tavily\__init__.py)
+2026-07-02 23:33:48,081 - Step4_Tools - ERROR - Web search failed: cannot import name 'TavilySearchResults' from 'langchain_tavily' (D:\genai-rag-project\venv\Lib\site-packages\langchain_tavily\__init__.py)
+2026-07-02 23:33:49,547 - Step4_Tools - ERROR - Web search failed: cannot import name 'TavilySearchResults' from 'langchain_tavily' (D:\genai-rag-project\venv\Lib\site-packages\langchain_tavily\__init__.py)
+2026-07-02 23:33:50,452 - Step4_Tools - ERROR - Web search failed: cannot import name 'TavilySearchResults' from 'langchain_tavily' (D:\genai-rag-project\venv\Lib\site-packages\langchain_tavily\__init__.py)
+2026-07-02 23:34:27,068 - Step4_Tools - ERROR - Web search failed: cannot import name 'TavilySearchResults' from 'langchain_tavily' (D:\genai-rag-project\venv\Lib\site-packages\langchain_tavily\__init__.py)
+2026-07-02 23:34:28,349 - Step4_Tools - ERROR - Web search failed: cannot import name 'TavilySearchResults' from 'langchain_tavily' (D:\genai-rag-project\venv\Lib\site-packages\langchain_tavily\__init__.py)
