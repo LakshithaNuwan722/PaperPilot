@@ -12,8 +12,12 @@ DATA_DIR = PROJECT_ROOT / "data"
 CHROMA_DIR = PROJECT_ROOT / "chroma_db"
 
 # Model Configurations
-PRIMARY_MODEL = "llama-3.3-70b-versatile"
-FALLBACK_MODEL = "llama-3.1-8b-instant"
+# As of July 2026, Groq's recommended production models with tool-use support:
+#   Primary  : openai/gpt-oss-120b  (120B params, ~500 tps, full tool-calling)
+#   Fallback : openai/gpt-oss-20b   (20B params, faster, lighter)
+# See: https://console.groq.com/docs/models
+PRIMARY_MODEL = "openai/gpt-oss-120b"
+FALLBACK_MODEL = "openai/gpt-oss-20b"
 EMBEDDING_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 
 # RAG Configurations
