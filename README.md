@@ -1,3 +1,12 @@
+---
+title: PaperPilot AI
+emoji: 🧭
+colorFrom: orange
+colorTo: purple
+sdk: docker
+pinned: false
+---
+
 # ✈️ PaperPilot: Agentic RAG Research Assistant
 
 PaperPilot is a sophisticated GenAI application that goes beyond simple RAG (Retrieval-Augmented Generation). It is an **Agentic AI** capable of reasoning, using tools, and providing grounded answers from PDF documents.
@@ -65,7 +74,7 @@ streamlit run src/app.py
 ### 5. Running with Docker
 ```bash
 docker build -t paperpilot .
-docker run -p 8501:8501 --env-file .env paperpilot
+docker run -p 7860:7860 --env-file .env paperpilot
 ```
 
 ## 📊 Monitoring
