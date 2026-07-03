@@ -1,0 +1,32 @@
+# ===== NEVER commit secrets =====
+.env
+*.key
+
+# ===== Python =====
+venv/
+__pycache__/
+*.pyc
+.Python
+*.egg-info/
+
+# ===== Vector DB (rebuilt from PDFs, no need to commit) =====
+chroma_db/
+
+# ===== Data (don't commit large/private PDFs; keep a sample if small) =====
+data/*.pdf
+!data/sample.pdf
+
+# ===== OS / Editor junk =====
+.DS_Store
+.vscode/
+.idea/
+
+# ===== Streamlit =====
+.streamlit/secrets.toml
+
+data/
+chroma_db/
+logs/
+venv/
+.env
+__pycache__/

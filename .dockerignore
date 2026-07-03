@@ -1,0 +1,25 @@
+# Ignore virtual environments
+venv/
+.venv/
+env/
+
+# Ignore Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore local database and logs (we want a fresh start in the container)
+chroma_db/
+logs/
+
+# Ignore secrets
+.env
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Ignore Git
+.git/
+.gitignore
