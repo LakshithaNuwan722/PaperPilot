@@ -1,7 +1,7 @@
 ---
 title: PaperPilot AI
 emoji: 🧭
-colorFrom: orange
+colorFrom: yellow
 colorTo: purple
 sdk: docker
 pinned: false
