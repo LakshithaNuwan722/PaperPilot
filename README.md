@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 ---
 title: PaperPilot AI 🧭
 emoji: 🧭
@@ -96,7 +96,6 @@ Built as a 3-Tier project, it demonstrates the evolution from a basic RAG pipeli
 - **Embeddings:** HuggingFace (sentence-transformers)
 - **UI:** Streamlit
 - **DevOps:** Docker, Python Logging, JSONL Monitoring
->>>>>>> 21ad7503a1645d5738b8e59d17fcb3fd1843b811
 
 ## 🚀 Getting Started
 
@@ -152,44 +151,3 @@ Lakshitha Wijekoon
 
 LinkedIn: Your LinkedIn Profile (Replace with your actual link)
 GitHub: @lakshitha722
-=======
-- Groq API Key (Free)
-- Tavily API Key (Free - for web search)
-
-### 2. Installation
-```bash
-git clone https://github.com/yourusername/paperpilot.git
-cd paperpilot
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-```
-
-### 3. Configuration
-Create a `.env` file in the root directory:
-```env
-GROQ_API_KEY=your_groq_key
-TAVILY_API_KEY=your_tavily_key
-```
-
-### 4. Running the App
-```bash
-streamlit run src/app.py
-```
-
-### 5. Running with Docker
-```bash
-docker build -t paperpilot .
-docker run -p 8501:8501 --env-file .env paperpilot
-```
-
-## 📊 Monitoring
-Interactions are logged to `logs/interactions.jsonl`, capturing:
-- User Question
-- AI Answer
-- Latency (Time taken)
-- Timestamp
-
----
-*Developed as a GenAI Capstone Project for Portfolio.*
->>>>>>> 21ad7503a1645d5738b8e59d17fcb3fd1843b811
