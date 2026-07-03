@@ -8,6 +8,7 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     build-essential \
     curl \
+    software-properties-common \
     && rm -rf /var/lib/apt/lists/*
 
 # 4. Copy and install requirements
@@ -27,5 +28,5 @@ EXPOSE 7860
 ENV PYTHONUNBUFFERED=1
 ENV ANONYMIZED_TELEMETRY=False
 
-# 9. Run streamlit on port 7860
-CMD ["streamlit", "run", "src/app.py", "--server.port=7860", "--server.address=0.0.0.0"]
+# 9. Run streamlit on port 7860 with CORS and XSRF disabled for HuggingFace
+CMD ["streamlit", "run", "src/app.py", "--server.port=7860", "--server.address=0.0.0.0", "--server.enableCORS=false", "--server.enableXsrfProtection=false"]
