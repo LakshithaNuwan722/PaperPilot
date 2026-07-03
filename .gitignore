@@ -23,6 +23,7 @@ data/*.pdf
 
 # ===== Streamlit =====
 .streamlit/secrets.toml
+<<<<<<< HEAD
 
 data/
 chroma_db/
@@ -30,3 +31,5 @@ logs/
 venv/
 .env
 __pycache__/
+=======
+>>>>>>> 21ad7503a1645d5738b8e59d17fcb3fd1843b811
