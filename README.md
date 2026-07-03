@@ -1,4 +1,3 @@
-
 ---
 title: PaperPilot AI 🧭
 emoji: 🧭
@@ -10,6 +9,11 @@ pinned: false
 
 # ✈️ PaperPilot AI: Production-Grade Agentic RAG Assistant
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-HuggingFace%20Spaces-yellow?style=for-the-badge&logo=huggingface)](https://huggingface.co/spaces/lakshitha722/paperpilot-ai)
+[![Python Version](https://img.shields.io/badge/python-3.10%2B-blue?style=for-the-badge&logo=python)](https://www.python.org/)
+[![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
+[![LangChain](https://img.shields.io/badge/LangChain-1.2-green?style=for-the-badge)](https://langchain.com/)
+
 > **"Beyond simple RAG. An autonomous agent that reasons, calculates, and browses."**
 
 PaperPilot AI is a sophisticated GenAI application built with a 3-tier production mindset. It transforms static PDF documents into interactive intelligence by combining **Retrieval-Augmented Generation (RAG)** with **Agentic Reasoning**. Powered by **LangGraph** and **Groq's Llama 3.3 70B**, it doesn't just answer questions—it thinks about which tools to use to provide the most accurate, grounded response.
@@ -18,7 +22,7 @@ PaperPilot AI is a sophisticated GenAI application built with a 3-tier productio
 
 ## 🔗 Live Demo & Repository
 - **Live on HuggingFace Spaces:** [PaperPilot AI 🧭](https://huggingface.co/spaces/lakshitha722/paperpilot-ai)
-- **GitHub Repository:** [GitHub Link](https://github.com/lakshitha722/paperpilot-ai) *(Replace with your actual link)*
+- **GitHub Repository:** [GitHub Link](https://github.com/lakshitha722/paperpilot-ai) *(Replace with your actual link if different)*
 
 ---
 
@@ -60,48 +64,11 @@ PaperPilot AI is a sophisticated GenAI application built with a 3-tier productio
 | **Infrastructure** | Docker, HuggingFace Spaces |
 
 ---
-=======
-# ✈️ PaperPilot: Agentic RAG Research Assistant
-
-PaperPilot is a sophisticated GenAI application that goes beyond simple RAG (Retrieval-Augmented Generation). It is an **Agentic AI** capable of reasoning, using tools, and providing grounded answers from PDF documents.
-
-Built as a 3-Tier project, it demonstrates the evolution from a basic RAG pipeline to a production-ready, containerized agent.
-
-## 🌟 Key Features
-
-- **Tier 1 (Core RAG):** Intelligent PDF text extraction, cleaning, and semantic search using ChromaDB.
-- **Tier 2 (Agentic AI):** A ReAct agent built with **LangGraph** that chooses between:
-    - `search_documents`: Contextual search within uploaded PDFs.
-    - `calculator`: Precise mathematical computations.
-    - `web_search`: Real-time internet access via Tavily API.
-    - `summarize_document`: High-level overviews of document content.
-- **Tier 3 (MLOps & Production):** 
-    - **Dockerized:** Fully containerized for consistent deployment.
-    - **Monitoring:** Interaction logging with latency tracking.
-    - **Robustness:** Fallback model logic (Llama 3.3 70B -> Llama 3.1 8B) for reliable tool calling.
-    - **Clean Architecture:** Modular code with centralized configuration and logging.
-
-## 🏗️ Architecture
-
-1. **Ingestion:** PDF -> Text Cleaning -> Recursive Chunking -> HuggingFace Embeddings.
-2. **Retrieval:** ChromaDB Vector Store for semantic similarity search.
-3. **Reasoning:** LangGraph ReAct loop powered by Groq (Llama 3.3 70B).
-4. **UI:** Streamlit-based chat interface with "Thought Step" visibility.
-
-## 🛠️ Tech Stack
-
-- **Framework:** LangChain & LangGraph
-- **LLM:** Groq (Llama 3.3 70B / 3.1 8B)
-- **Vector DB:** ChromaDB
-- **Embeddings:** HuggingFace (sentence-transformers)
-- **UI:** Streamlit
-- **DevOps:** Docker, Python Logging, JSONL Monitoring
 
 ## 🚀 Getting Started
 
 ### 1. Prerequisites
 - Python 3.10+
-<<<<<<< HEAD
 - [Groq API Key](https://console.groq.com/)
 - [Tavily API Key](https://tavily.com/)
 
@@ -118,36 +85,41 @@ source venv/bin/activate  # Windows: venv\Scripts\activate
 # Install dependencies
 pip install -r requirements.txt
 ```
-### 3.  Setup Environment Variables
-Create a .env file:
+
+### 3. Setup Environment Variables
+Create a `.env` file in the root directory:
+```env
 GROQ_API_KEY=your_groq_api_key
 TAVILY_API_KEY=your_tavily_api_key
+```
 
 ### 4. Run the Application
+```bash
 streamlit run src/app.py
+```
 
 ---
 
 ## 🐳 Docker Deployment
 To run the production container locally:
+```bash
 docker build -t paperpilot .
 docker run -p 7860:7860 --env-file .env paperpilot
+```
 
 ---
 
 ## 📈 Monitoring & Evaluation
-All user interactions are logged in logs/interactions.jsonl.
+All user interactions are logged in `logs/interactions.jsonl`.
 Fields captured for MLOps analysis:
-
-timestamp: ISO 8601 formatted time.
-question: Raw user input.
-answer: Generated agentic response.
-latency: End-to-end response time in seconds.
+- **timestamp**: ISO 8601 formatted time.
+- **question**: Raw user input.
+- **answer**: Generated agentic response.
+- **latency**: End-to-end response time in seconds.
 
 ---
 
 ## 👤 Author
-Lakshitha Wijekoon
-
-LinkedIn: Your LinkedIn Profile (Replace with your actual link)
-GitHub: @lakshitha722
+**Lakshitha Wijekoon**
+- **GitHub:** [@lakshitha722](https://github.com/lakshitha722)
+- **LinkedIn:** [Lakshitha Wijekoon](https://www.linkedin.com/in/lakshitha-wijekoon-592657252/)
