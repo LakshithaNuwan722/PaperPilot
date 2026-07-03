@@ -1,32 +1,33 @@
-# 1. Use an official Python base image
+# 1. Official Python image
 FROM python:3.10-slim
 
-# 2. Set the working directory
+# 2. Set working directory
 WORKDIR /app
 
-# 3. Install system dependencies
+# 3. Install essential system dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
     curl \
-    software-properties-common \
     && rm -rf /var/lib/apt/lists/*
 
-# 4. Copy and install requirements
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# 4. Create a non-root user (Hugging Face requirement)
+RUN useradd -m -u 1000 user
+USER user
+ENV PATH="/home/user/.local/bin:${PATH}"
 
-# 5. Copy the rest of the application
-COPY . .
+# 5. Copy requirements and install (as user)
+COPY --chown=user requirements.txt .
+RUN pip install --no-cache-dir --user -r requirements.txt
 
-# 6. Create necessary directories with correct permissions
-RUN mkdir -p data logs chroma_db && chmod -R 777 data logs chroma_db
+# 6. Copy the rest of the app with correct ownership
+COPY --chown=user . .
 
-# 7. Expose the port HuggingFace expects (7860)
-EXPOSE 7860
+# 7. Create necessary directories in user space
+RUN mkdir -p /app/data /app/logs /app/chroma_db
 
 # 8. Set environment variables
 ENV PYTHONUNBUFFERED=1
 ENV ANONYMIZED_TELEMETRY=False
 
-# 9. Run streamlit on port 7860 with CORS and XSRF disabled for HuggingFace
+# 9. Run streamlit on port 7860
 CMD ["streamlit", "run", "src/app.py", "--server.port=7860", "--server.address=0.0.0.0", "--server.enableCORS=false", "--server.enableXsrfProtection=false"]
